@@ -1,6 +1,6 @@
+import NavBar from "@/components/NavBar";
 import type { Metadata } from "next";
-
-import "./globals.css";
+import ShopContextProvider from "../context/ShopContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,8 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en " suppressHydrationWarning={true}>
-      <body className={` antialiased`}>{children}</body>
-    </html>
+    <ShopContextProvider>
+      <NavBar />
+      {children}
+    </ShopContextProvider>
   );
 }
