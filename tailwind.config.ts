@@ -8,6 +8,9 @@ export default {
   ],
   theme: {
     extend: {
+      rotate: {
+        "360": "360deg",
+      },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",

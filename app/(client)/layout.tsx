@@ -1,6 +1,8 @@
 import NavBar from "@/components/NavBar";
 import type { Metadata } from "next";
 import ShopContextProvider from "../context/ShopContext";
+import Footer from "@/components/Footer";
+import SearchBar from "@/components/SearchBar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,7 +17,9 @@ export default function RootLayout({
   return (
     <ShopContextProvider>
       <NavBar />
+      <SearchBar />
       {children}
+      <Footer />
     </ShopContextProvider>
   );
 }

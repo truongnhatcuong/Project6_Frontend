@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import React from "react";
 
 const Hero = () => {
@@ -13,7 +12,7 @@ const Hero = () => {
         </div>
         {/* Section 2 */}
         <h1 className="text-3xl sm:py-3 lg:text-5xl leading-relaxed prata-regular">
-          LaTest Arrivals
+          FASHION
         </h1>
         {/* Section 3 */}
         <div className="flex items-center gap-2">
