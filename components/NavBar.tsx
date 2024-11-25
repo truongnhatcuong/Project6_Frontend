@@ -19,7 +19,7 @@ const menuItems = [
 const NavBar = () => {
   const pathname = usePathname();
   const [visible, setVisible] = useState<boolean>(false);
-  const { setShowSearch } = useContext(ShopContext);
+  const { setShowSearch, getCartCount } = useContext(ShopContext);
 
   return (
     <div className="flex items-center justify-between py-5 font-medium">
@@ -52,7 +52,10 @@ const NavBar = () => {
           onClick={() => setShowSearch(true)}
         />
         <div className="group relative">
-          <FaRegUser className="text-xl cursor-pointer mr-3" />
+          <Link href={"/login"}>
+            {" "}
+            <FaRegUser className="text-xl cursor-pointer mr-3" />
+          </Link>
           <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
             <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-slate-50 text-gray-500 rounded-md">
               <p className="cursor-pointer hover:text-black">My Profile</p>
@@ -68,7 +71,7 @@ const NavBar = () => {
             className="absolute right-[-5px] bottom-[-5px] w-4 text-center 
             leading-4 bg-black text-white rounded-full aspect-square text-[8px] mr-5 "
           >
-            10
+            {getCartCount()}
           </p>
         </Link>
         <HiMenu

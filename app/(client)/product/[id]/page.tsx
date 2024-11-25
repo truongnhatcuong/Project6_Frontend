@@ -87,7 +87,7 @@ const Page = () => {
           </div>
           {/* adđ to cart */}
           <button
-            onClick={() => addToCart(productData._id, productData.sizes)}
+            onClick={() => addToCart(productData._id, size)}
             className="bg-black text-white px-8 py-3 text-sm active:bg-slate-700"
           >
             GIỎ HÀNG
