@@ -1,27 +1,29 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
 "use client";
-import { createContext, ReactNode, useState } from "react";
-import { StaticImageData } from "next/image";
-import { products } from "../assets/frontend_assets/assets";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+
 interface IProduct {
   _id: string;
   name: string;
   description: string;
   price: number;
-  image: StaticImageData[];
+  image: string[];
   category: string;
+  quantity: number;
   subCategory: string;
-  sizes: string[];
+  sizes: string[] | string;
   date: number;
   bestseller: boolean;
 }
 
 interface IShopContext {
-  products: IProduct[];
+  product: IProduct[];
   currency: string;
   delivery_fee: number;
   search: string;
@@ -30,16 +32,19 @@ interface IShopContext {
   showSearch: boolean;
   addToCart: (itemId: string, size: string) => void;
   cartItem: any; // Lưu trữ theo sản phẩm và kích cỡ
-  setCartItem: (values?: string) => any;
+  setCartItem: (values?: string | any) => any;
   getCartCount: () => number;
   UpdateCart: (itemId: string, size: string, quantily: number) => any;
   getCartAmount: any;
   router: any;
+  token: string;
+  setToken: any;
+  backendUrl: string | null;
 }
 
 // giá trị mặc định
 
-export const ShopContext = createContext<IShopContext>(null!);
+export const ShopContext = createContext<IShopContext>(null!) || null;
 
 interface ShopContextProviderProps {
   children: ReactNode;
@@ -51,7 +56,11 @@ const ShopContextProvider = ({ children }: ShopContextProviderProps) => {
   const [search, setSearch] = useState<string>("");
   const [showSearch, setShowSearch] = useState<boolean>(true);
   const [cartItem, setCartItem] = useState<any>({});
+  const [product, setProduct] = useState<IProduct[]>([]);
+  const [token, setToken] = useState<string>("") || "";
   const router = useRouter();
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+
   const addToCart = async (itemId: string, size: any) => {
     if (!size) {
       toast.error("vui lòng chọn size");
@@ -70,6 +79,17 @@ const ShopContextProvider = ({ children }: ShopContextProviderProps) => {
       cartData[itemId][size] = 1;
     }
     setCartItem(cartData);
+    if (token) {
+      try {
+        await axios.post(
+          `${backendUrl}/api/cart/add`,
+          { itemId, size },
+          { headers: { token } }
+        );
+      } catch (error: any) {
+        toast.error(error.message);
+      }
+    }
   };
 
   const getCartCount = () => {
@@ -84,16 +104,46 @@ const ShopContextProvider = ({ children }: ShopContextProviderProps) => {
     return totalCount;
   };
 
-  const UpdateCart = (itemId: string, size: string, quantily: number) => {
+  const UpdateCart = async (itemId: string, size: string, quantity: number) => {
     const CartData = JSON.parse(JSON.stringify(cartItem));
-    CartData[itemId][size] = quantily;
+    CartData[itemId][size] = quantity;
     setCartItem(CartData);
+    if (token) {
+      try {
+        await axios.post(
+          `${backendUrl}/api/cart/update`,
+          { itemId, size, quantity },
+          { headers: { token } }
+        );
+      } catch (error: any) {
+        console.log(error);
+        toast.error(error);
+      }
+    }
+  };
+
+  //get cartUserName
+  const getUserCart = async (token: any) => {
+    try {
+      const res = await axios.post(
+        `${backendUrl}/api/cart/get`,
+        {},
+        { headers: { token } }
+      );
+      if (res.data.success) {
+        setCartItem(res.data.cartData);
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   const getCartAmount = () => {
     let totalAmont = 0;
     for (const items in cartItem) {
-      let itemInfor = products.find((product) => product._id === items);
+      let itemInfor = product.find((product) => product._id === items);
       if (!itemInfor?.price) {
         return;
       }
@@ -106,8 +156,25 @@ const ShopContextProvider = ({ children }: ShopContextProviderProps) => {
     return totalAmont;
   };
 
+  const FetchApi = async () => {
+    const res = await axios.get(`${backendUrl}/api/product/list`);
+    if (res.data.success) {
+      setProduct(res.data.listProduct);
+    }
+  };
+
+  useEffect(() => {
+    FetchApi();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (!token && localStorage.getItem("token")) {
+      setToken(localStorage.getItem("token")!);
+      getUserCart(localStorage.getItem("token"));
+    }
+  }, []);
   const value: IShopContext = {
-    products: products, // Đảm bảo products được định nghĩa chính xác
+    product: product, // Đảm bảo products được định nghĩa chính xác
     currency,
     delivery_fee,
     search,
@@ -121,6 +188,9 @@ const ShopContextProvider = ({ children }: ShopContextProviderProps) => {
     UpdateCart,
     getCartAmount,
     router,
+    token,
+    setToken,
+    backendUrl,
   };
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;

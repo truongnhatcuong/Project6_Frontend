@@ -6,12 +6,12 @@ import ProductItem from "./ProductItem";
 import { IProduct } from "@/app/Interface/IntefaceProduct";
 
 const LatestCollection = () => {
-  const { products } = useContext(ShopContext)!;
+  const { product } = useContext(ShopContext)!;
   const [latestProduct, setlatestProduct] = useState<IProduct[] | null>([]);
 
   useEffect(() => {
-    setlatestProduct(products.slice(0, 10));
-  }, [products]);
+    setlatestProduct(product?.slice(0, 10));
+  }, [product]);
   return (
     <div className="my-10">
       <div className="text-center py-8 text-3xl">

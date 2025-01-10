@@ -11,12 +11,12 @@ export interface IProductRelate {
 }
 
 const RelateProduct = ({ category, subCategory }: IProductRelate) => {
-  const { products } = useContext(ShopContext);
+  const { product } = useContext(ShopContext);
   const [relate, setRelate] = useState<IProduct[]>([]);
 
   useEffect(() => {
-    if (products.length > 0) {
-      let RelateProduct = [...products];
+    if (product.length > 0) {
+      let RelateProduct = [...product];
       RelateProduct = RelateProduct.filter(
         (item) => item.category === category
       );
@@ -25,7 +25,7 @@ const RelateProduct = ({ category, subCategory }: IProductRelate) => {
       );
       setRelate(RelateProduct.slice(0, 5));
     }
-  }, [category, products, subCategory]);
+  }, [category, product, subCategory]);
   return (
     <div className="mt-24">
       <div className="text-center text-3xl py-2">

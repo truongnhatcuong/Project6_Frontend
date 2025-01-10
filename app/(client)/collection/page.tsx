@@ -21,7 +21,7 @@ const Page = () => {
       <div className="text-center text-sm text-gray-700">không có danh mục</div>
     );
   }
-  const { products, search, showSearch } = context || { products: [] };
+  const { product, search, showSearch } = context || { products: [] };
 
   // lọc theo tên danh mục
   const toggleCategory = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +33,7 @@ const Page = () => {
     );
   };
   const FitterHandle = () => {
-    let ApplyProduct = products.slice();
+    let ApplyProduct = product?.slice();
 
     if (showSearch && search) {
       ApplyProduct = ApplyProduct.filter((item) =>
@@ -84,7 +84,7 @@ const Page = () => {
   };
 
   useEffect(() => {
-    setFilterProduct(products);
+    setFilterProduct(product);
   }, []);
 
   useEffect(() => {

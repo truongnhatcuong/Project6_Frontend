@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import "./globals.css";
+import ShopContextProvider from "./context/ShopContext";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,7 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en " suppressHydrationWarning={true}>
-      <body className={` antialiased mx-0 sm:mx-24`}>{children}</body>
+      <ShopContextProvider>
+        <body className={` antialiased`}>{children}</body>
+      </ShopContextProvider>
     </html>
   );
 }

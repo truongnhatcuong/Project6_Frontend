@@ -1,6 +1,6 @@
 import NavBar from "@/components/NavBar";
 import type { Metadata } from "next";
-import ShopContextProvider from "../context/ShopContext";
+
 import Footer from "@/components/Footer";
 import SearchBar from "@/components/SearchBar";
 import { ToastContainer } from "react-toastify";
@@ -16,12 +16,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ShopContextProvider>
+    <div className=" mx-0 sm:mx-24">
       <ToastContainer />
       <NavBar />
       <SearchBar />
       {children}
       <Footer />
-    </ShopContextProvider>
+    </div>
   );
 }

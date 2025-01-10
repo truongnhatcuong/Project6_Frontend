@@ -11,16 +11,16 @@ import React, { useContext, useEffect, useState } from "react";
 const Page = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { id } = useParams();
-  const { products, currency, addToCart } = useContext(ShopContext)!;
+  const { product, currency, addToCart } = useContext(ShopContext)!;
   const [productData, setProductData] = useState<IProduct | null>(null);
   const [image, setImage] = useState<string>("");
   const [size, setSize] = useState<string>("");
 
   const CallFetch = async () => {
-    products.map((item) => {
+    product.map((item) => {
       if (item._id === id) {
         setProductData(item);
-        setImage(item.image[0].src);
+        setImage(item.image[0]);
 
         return null;
       }
@@ -39,8 +39,8 @@ const Page = () => {
           <div className="flex sm:flex-col overflow-x-auto sm:overflow-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
             {productData.image.map((item, index) => (
               <img
-                src={item.src}
-                onClick={() => setImage(item.src)}
+                src={item}
+                onClick={() => setImage(item)}
                 alt=""
                 key={index}
                 className="w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"

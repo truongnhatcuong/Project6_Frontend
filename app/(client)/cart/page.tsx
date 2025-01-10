@@ -12,27 +12,30 @@ interface ICart {
   quantily: number;
 }
 const Page = () => {
-  const { products, cartItem, currency, UpdateCart, router } =
+  const { product, cartItem, currency, UpdateCart, router } =
     useContext(ShopContext);
   const [cartData, setCartData] = useState<ICart[] | []>([]);
 
   useEffect(() => {
-    const itemData = [];
+    if (product.length > 0) {
+      const itemData = [];
 
-    for (const items in cartItem) {
-      for (const item in cartItem[items]) {
-        if (cartItem[items][item] > 0) {
-          itemData.push({
-            _id: items,
-            size: item,
-            quantily: cartItem[items][item],
-          });
+      for (const items in cartItem) {
+        for (const item in cartItem[items]) {
+          if (cartItem[items][item] > 0) {
+            itemData.push({
+              _id: items,
+              size: item,
+              quantily: cartItem[items][item],
+            });
+          }
         }
       }
-    }
 
-    setCartData(itemData);
-  }, [cartItem]);
+      setCartData(itemData);
+    }
+  }, [cartItem, product]);
+
   return (
     <div className="border-t pt-14">
       <div className="text-2xl mb-3">
@@ -40,7 +43,7 @@ const Page = () => {
       </div>
       <div>
         {cartData?.map((item: ICart, index: number) => {
-          const productData = products.find((prd) => prd._id === item._id);
+          const productData = product.find((prd) => prd._id === item._id);
           return (
             <div
               key={index}
@@ -48,7 +51,7 @@ const Page = () => {
             >
               <div className="flex items-start gap-6">
                 <img
-                  src={productData?.image[0].src}
+                  src={productData?.image[0]}
                   alt=""
                   className="w-16 sm:w-20"
                 />
@@ -93,8 +96,13 @@ const Page = () => {
           <CartTotal />
           <div className="text-end w-full">
             <button
+              type="submit"
               className="bg-black text-white text-sm py-3 px-8 my-8"
-              onClick={() => router.push("/placeOrder")}
+              onClick={
+                cartData?.length === 0
+                  ? undefined
+                  : () => router.push("/placeOrder")
+              }
             >
               THANH TOÁN
             </button>
